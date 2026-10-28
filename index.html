@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rivalry — Good friends. Bad losers.</title>
+<meta name="description" content="Rivalry: five quick party games for the group chat. Trivia, Rock-Paper-Scissors, Secret Word, Reaction Rush and Memory Match. No sign-ups, no downloads.">
+<meta name="theme-color" content="#0e1110">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rivalry — Good friends. Bad losers.">
+<meta property="og:description" content="Five quick party games for the group chat. No sign-ups. No downloads. Just play.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b8f34a'/%3E%3Cpath d='M36 8 16 36h14l-2 20 20-28H34z' fill='%23111'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1110;--panel:#171b19;--line:#2a312d;--text:#f3f5ef;--mute:#8d978f;--lime:#b8f34a;--green:#1f3a2c;--maroon:#3a1d1f;--purple:#2b2347;--pink:#ff7aa8;--yellow:#ffd84a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input{font:inherit}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px;cursor:pointer}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--lime);color:#111;display:grid;place-items:center;font-style:normal;font-size:16px}
+.navlinks{display:flex;gap:28px;font-size:14px;color:var(--mute)}
+.navlinks .on{color:var(--text);border-bottom:2px solid var(--lime);padding-bottom:6px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:14px;transition:.15s}
+.pill:hover{border-color:var(--lime);color:var(--lime)}
+.btn{background:var(--lime);color:#111;font-weight:700;border-radius:14px;padding:15px 26px;font-size:16px;transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #6f9a1e}
+.btn:disabled{opacity:.35;pointer-events:none}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{box-shadow:none;border-color:var(--lime)}
+/* hero */
+.hero{display:flex;justify-content:space-between;align-items:center;padding:56px 0 30px;gap:30px;flex-wrap:wrap}
+h1{font-size:clamp(48px,9vw,96px);line-height:.95;letter-spacing:-.04em;margin:14px 0 18px}
+h1 em{font-style:normal;color:var(--lime)}
+h1 sup{color:var(--lime);font-size:.5em}
+.note{background:var(--yellow);color:#222;width:190px;padding:20px;border-radius:6px;transform:rotate(7deg);box-shadow:0 14px 30px #0008;font-weight:700;font-size:22px;line-height:1.1;position:relative}
+.note small{display:block;font:500 10px 'JetBrains Mono';letter-spacing:.1em;margin-bottom:6px;text-transform:uppercase}
+.note::before{content:"";position:absolute;top:-10px;left:50%;width:50px;height:18px;background:#ffffff66;transform:translateX(-50%) rotate(-3deg)}
+.sec{display:flex;justify-content:space-between;align-items:end;margin:40px 0 18px}
+.sec h2{font-size:34px;letter-spacing:-.02em}
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{border:1px solid var(--line);border-radius:22px;overflow:hidden;text-align:left;transition:.18s;position:relative;display:block}
+.card:hover{transform:translateY(-4px)}
+.card.sel{border-color:var(--lime);box-shadow:0 0 0 2px #b8f34a44}
+.card .art{height:170px;display:grid;place-items:center;font-size:84px;position:relative}
+.card .art b{position:absolute;top:12px;left:12px;font:500 10px 'JetBrains Mono';letter-spacing:.1em;background:#0007;padding:5px 9px;border-radius:99px}
+.card .art span{filter:drop-shadow(0 10px 14px #0007);display:inline-block;transition:.3s}
+.card:hover .art span{transform:rotate(-8deg) scale(1.1)}
+.card .body{padding:18px;background:#0c0f0dcc}
+.card h3{font-size:22px;margin:6px 0}
+.card p{color:var(--mute);font-size:14px;line-height:1.4;min-height:40px}
+.card .meta{display:flex;gap:18px;margin-top:14px}
+.tick{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:var(--lime);color:#111;display:none;place-items:center;font-weight:700}
+.card.sel .tick{display:grid}
+.g-trivia .art{background:var(--green)}.g-rps .art{background:var(--maroon)}.g-word .art{background:var(--purple)}.g-react .art{background:#3a2a12}.g-memory .art{background:#12343a}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px}
+.rules .panel h3{font-size:22px;margin:4px 0 12px}
+.rules ol{padding-left:0;list-style:none;display:grid;gap:12px;counter-reset:r}
+.rules li{counter-increment:r;display:flex;gap:12px;color:var(--text);line-height:1.4}
+.rules li::before{content:counter(r);flex:none;width:26px;height:26px;border-radius:50%;background:var(--lime);color:#111;font:700 13px 'JetBrains Mono';display:grid;place-items:center}
+.reactpad{border-radius:22px;min-height:300px;display:grid;place-items:center;font-size:34px;font-weight:700;cursor:pointer;user-select:none;margin:18px 0}
+.reactpad.wait{background:#5a1d1d}.reactpad.go{background:#1f8a2f}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:420px;margin:0 auto}
+.mem button{aspect-ratio:1;border-radius:14px;background:#1f2a24;border:1px solid var(--line);font-size:40px;transition:.2s}
+.mem button.up{background:#2b2347;transform:rotateY(0)}.mem button.done{background:#1d4a1d;border-color:var(--lime);cursor:default}
+/* gang */
+.gang{border:1px solid var(--line);border-radius:22px;padding:26px;display:flex;gap:30px;flex-wrap:wrap;align-items:center;justify-content:space-between;background:var(--panel)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:14px}
+.seg button{padding:10px 18px;border-radius:10px;font-size:15px;color:var(--mute)}
+.seg button.on{background:var(--lime);color:#111;font-weight:700}
+.avs{display:flex}.avs span{width:46px;height:46px;border-radius:50%;background:#26302a;border:3px solid var(--panel);margin-left:-10px;display:grid;place-items:center;font-size:24px}
+footer{padding:50px 0;color:var(--mute);font-size:13px;text-align:center}
+/* screens */
+.stage{padding:34px 0 60px;max-width:760px;margin:0 auto}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px}
+.row{display:flex;align-items:center;gap:12px}
+.plist{display:grid;gap:10px;margin:18px 0}
+.pl{display:flex;align-items:center;gap:12px;background:#0e1110;border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.pl .av{font-size:26px}
+.pl input{flex:1;background:none;border:0;color:var(--text);font-size:17px;outline:none;min-width:0}
+.pl .x{color:var(--mute);font-size:20px}
+.code{font:700 44px 'JetBrains Mono';letter-spacing:.2em;color:var(--lime)}
+.score{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.score div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px;display:flex;gap:8px;align-items:center}
+.score div.turn{border-color:var(--lime);background:#1b2a14}
+.score b{color:var(--lime);font-family:'JetBrains Mono'}
+.q{font-size:clamp(24px,4vw,34px);line-height:1.15;letter-spacing:-.02em;margin:10px 0 22px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.opts{grid-template-columns:1fr}.navlinks{display:none}}
+.opt{background:#0e1110;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:left;font-size:17px;transition:.12s}
+.opt:hover:not(:disabled){border-color:var(--lime);transform:translateY(-2px)}
+.opt.ok{background:#1d4a1d;border-color:var(--lime)}.opt.bad{background:#4a1d1d;border-color:#ff5a5a}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--lime);animation:shrink linear forwards}
+@keyframes shrink{from{width:100%}to{width:0}}
+.center{text-align:center}
+.big{font-size:90px;line-height:1;margin:14px 0}
+.rpsrow{display:flex;gap:14px;justify-content:center;margin:20px 0;flex-wrap:wrap}
+.rpsbtn{font-size:64px;width:120px;height:120px;border-radius:24px;background:#0e1110;border:1px solid var(--line);transition:.15s}
+.rpsbtn:hover{transform:translateY(-6px) rotate(-4deg);border-color:var(--lime)}
+.vs{display:flex;justify-content:center;align-items:center;gap:30px;font-size:80px;margin:20px 0}
+.vs small{display:block;font-size:14px;color:var(--mute);text-align:center}
+.word{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0}
+.word span{width:46px;height:58px;border-bottom:3px solid var(--lime);display:grid;place-items:center;font:700 32px 'JetBrains Mono';text-transform:uppercase}
+.keys{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.keys button{width:42px;height:46px;border-radius:10px;background:#0e1110;border:1px solid var(--line);text-transform:uppercase;font-weight:700}
+.keys button:hover:not(:disabled){border-color:var(--lime)}
+.keys button:disabled{opacity:.3}.keys button.hit{background:#1d4a1d;opacity:1}.keys button.miss{background:#4a1d1d;opacity:1}
+.hearts{letter-spacing:4px}
+.rank{display:grid;gap:10px;margin:20px 0}
+.rank .pl:first-child{border-color:var(--yellow);background:#2a2510}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--lime);color:#111;font-weight:700;padding:12px 20px;border-radius:12px;z-index:9}
+.pop{animation:pop .35s}@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo" onclick="go('home')"><i>⚡</i>rivalry<sup style="color:var(--lime);font-size:10px">®</sup></div>
+    <div class="navlinks"><span id="nav-play" style="cursor:pointer" onclick="go('home')">Let's play</span><span id="nav-how" style="cursor:pointer" onclick="go('how')">How to play</span></div>
+    <button class="pill" onclick="joinRoom()">Join a room ↗</button>
+  </nav>
+  <main id="view"></main>
+  <noscript><p style="padding:40px 0">Rivalry needs JavaScript to run.</p></noscript>
+  <footer>Rivalry · a tiny party-game hub · no sign-ups, no downloads</footer>
+</div>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => a.map(x => [Math.random(), x]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+const EMOJI = ['😎','👽','👻','🤠','🦊','🐸','🐙','🦄'];
+const BOTS = ['Mochi','Zed','Pixel','Juno','Biscuit','Nova','Ziggy'];
+const GAMES = {
+  trivia:{name:'Trivia Showdown',kicker:'Big brains. Bigger egos.',tag:'Crowd favorite',blurb:'Quick questions. Quick thinking. Questionable confidence.',min:2,max:8,players:'2–8 players',time:'3–5 min',art:'🧠'},
+  rps:{name:'Rock, Paper, Scissors',kicker:'No skill. All mind games.',tag:'Instant classic',blurb:'The classic friendship settler. Make your move.',min:2,max:2,players:'2 players',time:'1–2 min',art:'✋'},
+  word:{name:'Secret Word',kicker:'A little clue. A lot of chaos.',tag:'Word on the street',blurb:'Guess the letters. Steal the points. Get the last word.',min:2,max:8,players:'2–8 players',time:'3–5 min',art:'🔤'},
+  react:{name:'Reaction Rush',kicker:'Fast thumbs. Faster excuses.',tag:'New',blurb:'Wait for green. Tap like your pride depends on it.',min:2,max:8,players:'2–8 players',time:'2–3 min',art:'⚡'},
+  memory:{name:'Memory Match',kicker:'Remember everything. Forgive nothing.',tag:'Brain snack',blurb:'Flip cards, find pairs, and quietly judge everyone\'s memory.',min:2,max:8,players:'2–8 players',time:'2–4 min',art:'🃏'}
+};
+const QUIZ = [
+  ['Which planet has the most moons (as of 2025)?',['Jupiter','Saturn','Uranus','Neptune'],1],
+  ['How many hearts does an octopus have?',['1','2','3','8'],2],
+  ['What is the capital of Australia?',['Sydney','Melbourne','Canberra','Perth'],2],
+  ['Which element has the symbol "Au"?',['Silver','Gold','Argon','Aluminium'],1],
+  ['In which sport would you perform a "slam dunk"?',['Volleyball','Tennis','Basketball','Golf'],2],
+  ['What is the largest ocean on Earth?',['Atlantic','Indian','Arctic','Pacific'],3],
+  ['How many sides does a hexagon have?',['5','6','7','8'],1],
+  ['Which animal is known as the "ship of the desert"?',['Horse','Camel','Elephant','Donkey'],1],
+  ['Who painted the Mona Lisa?',['Van Gogh','Picasso','Da Vinci','Monet'],2],
+  ['What gas do plants absorb from the air?',['Oxygen','Nitrogen','Carbon dioxide','Helium'],2],
+  ['Which is the fastest land animal?',['Lion','Cheetah','Horse','Leopard'],1],
+  ['What is the smallest prime number?',['0','1','2','3'],2],
+  ['Which country gave us pizza?',['France','Italy','Greece','Spain'],1],
+  ['How many continents are there?',['5','6','7','8'],2]
+];
+const WORDS = [
+  ['pizza','Cheesy circle of joy'],['jungle','Tarzan\'s neighbourhood'],['rocket','Goes up, loudly'],['guitar','Six strings, zero chill'],
+  ['pyramid','Old triangle in Egypt'],['volcano','Mountain with anger issues'],['penguin','Tuxedo, but a bird'],['wizard','Pointy hat, big opinions'],
+  ['bubble','Fragile and shiny'],['cactus','Do not hug it'],['galaxy','Lots of stars, one home'],['pancake','Flip it twice']
+];
+
+let S = {screen:'home', game:'trivia', mode:'online', players:[], room:'', g:null};
+let ME = 'me', PEER = null, GCONN = null, joinWait = null;
+const CONNS = {};
+const send = m => { try{
+  if(S.role==='guest'){ GCONN && GCONN.open && GCONN.send(m); }
+  else Object.values(CONNS).forEach(c=>{ if(c.open && (!m.to || m.to===c.peer)) c.send(m); });
+}catch(e){} };
+const multi = () => S.players.some(p=>p.remote);
+const newCode = () => Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)]).join('');
+function dropPeer(){ try{ PEER && PEER.destroy(); }catch(e){} PEER=null; GCONN=null; Object.keys(CONNS).forEach(k=>delete CONNS[k]); }
+let timers = [];
+const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+const clearAll = () => { timers.forEach(clearTimeout); timers = []; };
+
+function toast(msg){ const t = document.createElement('div'); t.className='toast pop'; t.textContent=msg; document.body.append(t); setTimeout(()=>t.remove(),2200); }
+function go(screen){ clearAll(); S.screen = screen; render(); window.scrollTo(0,0); }
+const RULES = {
+  trivia:['Five multiple-choice questions. Twenty seconds each.','Correct answers earn 100 points, plus up to 100 for speed.','On one screen, each player gets their own questions. Highest score wins.'],
+  rps:['Two rivals. Five rounds. Lock in a secret move.','Rock beats scissors. Scissors beat paper. Paper beats rock.','Each win earns one point. Matching moves draw. Most points wins; equal scores share the crown.'],
+  word:['Take turns guessing one letter. You get twenty seconds per turn.','Each revealed letter earns 10 points. Finish a word for 30 bonus points.','Six wrong guesses end a word. After three words, the highest score wins.'],
+  react:['Five rounds. Wait for the pad to turn green, then tap as fast as you can.','Your points are 1000 minus your reaction time in milliseconds, so 300 ms scores 700.','Tap early and you score zero for that round. Highest total wins.'],
+  memory:['Sixteen face-down cards hide eight pairs. Flip two on your turn.','A match earns 10 points and another turn. A miss passes the turn.','Clear the board. Most points wins; equal scores share the crown.']
+};
+function how(){
+  return `<div class="stage" style="max-width:1000px"><div class="mono">How to play</div><h1 style="font-size:clamp(40px,7vw,72px)">House rules.</h1>
+  <p style="color:var(--mute)">Friendly competition. Unfriendly levels of confidence.</p>
+  <div class="rules">${Object.entries(GAMES).map(([k,g])=>`<div class="panel"><div class="mono">${g.art} ${g.players} · ${g.time}</div><h3>${g.name}</h3><ol>${RULES[k].map(r=>`<li>${r}</li>`).join('')}</ol></div>`).join('')}</div>
+  <div style="margin-top:28px"><button class="btn" onclick="go('home')">Let's play →</button></div></div>`;
+}
+function joinRoom(){ go('join'); }
+function join(){
+  return `<div class="stage"><div class="panel center"><div class="mono">Got an invite?</div><h2 style="font-size:34px;margin:8px 0">Join a room</h2>
+  <p style="color:var(--mute);margin-bottom:20px">Enter the 4-letter code your friend shared.</p>
+  <input id="joincode" maxlength="4" autocomplete="off" placeholder="ABCD" style="width:220px;text-align:center;background:#0e1110;border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--lime);font:700 38px 'JetBrains Mono';letter-spacing:.2em;text-transform:uppercase;outline:none" oninput="this.value=this.value.replace(/[^a-z]/gi,'').toUpperCase()" onkeydown="if(event.key==='Enter')doJoin()">
+  <p id="joinerr" class="mono" style="margin:12px 0;min-height:16px;color:#ff7a7a"></p>
+  <div class="row" style="justify-content:center"><button class="btn" onclick="doJoin()">Join →</button><button class="btn ghost" onclick="go('home')">Back</button></div>
+  <p class="mono" style="margin-top:18px">No account needed. Ask the host for their code.</p></div></div>`;
+}
+function doJoin(){
+  const c = $('#joincode').value.trim().toUpperCase(), err = $('#joinerr');
+  if(c.length!==4){ err.textContent='Room codes are 4 letters.'; return; }
+  if(typeof Peer==='undefined'){ err.textContent='Could not load the connection library. Check your network and reload.'; return; }
+  err.textContent='Looking for room '+c+'…';
+  dropPeer(); clearTimeout(joinWait);
+  const p = new Peer(); PEER = p;
+  const fail = msg => { clearTimeout(joinWait); const e=$('#joinerr'); if(e) e.textContent=msg; if(PEER===p) dropPeer(); };
+  joinWait = setTimeout(()=>fail('No open room '+c+' found. Check the code and try again.'), 10000);
+  p.on('error', e=>fail(e.type==='peer-unavailable' ? 'No open room '+c+' found. Check the code and try again.' : 'Could not connect. Check your network.'));
+  p.on('open', id=>{
+    ME = id;
+    const conn = p.connect('rivalry-'+c, {reliable:true});
+    conn.on('open', ()=>{ GCONN = conn; conn.send({t:'join'}); });
+    conn.on('data', m=>guestMsg(m,c,fail));
+    conn.on('close', ()=>guestGone('Disconnected from the room'));
+  });
+}
+function guestMsg(m,c,fail){
+  if(m.t==='welcome'){ clearTimeout(joinWait); enterRoom(c); }
+  else if(m.t==='denied') fail(m.why);
+  else if(S.role==='guest' && m.t==='state'){ Object.assign(S,m.st); render(); }
+  else if(S.role==='guest' && m.t==='closed') guestGone('The host closed the room');
+}
+function guestGone(msg){ if(S.role!=='guest') return; dropPeer(); S.role=null; S.room=''; toast(msg); ORIG.go('home'); }
+function enterRoom(c){
+  clearAll(); S.mode='online'; S.role='guest'; S.room=c; S.players=[]; S.g=null; S.screen='lobby'; render(); toast('Joined room '+c);
+}
+
+/* ---------- home ---------- */
+function home(){
+  return `
+  <section class="hero">
+    <div>
+      <div class="mono">● The group chat just got competitive</div>
+      <h1>Good friends.<br>Bad <em>losers</em><sup>✳</sup>.</h1>
+      <p style="color:var(--mute)">A few minutes. A little chaos. A lot of “one more round.”</p>
+    </div>
+    <div class="note"><small>Warning</small>friendships may be tested. ☺</div>
+  </section>
+  <div class="sec"><div><div class="mono">01 / The lineup</div><h2>Pick your rivalry.</h2></div>
+    <button class="mono" style="cursor:pointer" onclick="S.game=rnd(Object.keys(GAMES));render();toast('Picked: '+GAMES[S.game].name)">⤨ Surprise me</button></div>
+  <div class="cards">
+    ${Object.entries(GAMES).map(([k,g])=>`
+    <button class="card g-${k} ${S.game===k?'sel':''}" onclick="S.game='${k}';render()">
+      <div class="art"><b>${g.tag}</b><span>${g.art}</span><div class="tick">✓</div></div>
+      <div class="body"><div class="mono">${g.kicker}</div><h3>${g.name}</h3><p>${g.blurb}</p>
+      <div class="meta"><span class="mono">☺ ${g.players}</span><span class="mono">◷ ${g.time}</span></div></div>
+    </button>`).join('')}
+  </div>
+  <div class="sec"><div><div class="mono">02 / Get the gang together</div><h2>Who's playing?</h2></div></div>
+  <div class="gang">
+    <div>
+      <div class="seg"><button class="${S.mode==='online'?'on':''}" onclick="S.mode='online';render()">Online with friends</button><button class="${S.mode==='local'?'on':''}" onclick="S.mode='local';render()">One screen</button></div>
+      <p style="color:var(--mute);max-width:340px">${S.mode==='online'?'Different places. Same room. Invite your favorite rivals.':'One device, passed around the couch. No hiding your face.'}</p>
+    </div>
+    <div style="text-align:right">
+      <button class="btn" onclick="startLobby()">${S.mode==='online'?'Create a room':'Set up players'} →</button>
+      <p class="mono" style="margin:10px 0">No sign-ups. No downloads. Just play.</p>
+      <div class="avs" style="justify-content:flex-end">${EMOJI.slice(0,3).map(e=>`<span>${e}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- lobby ---------- */
+function startLobby(){
+  clearAll();
+  const need = GAMES[S.game].min;
+  S.role = S.mode==='online' ? 'host' : null;
+  S.room = newCode();
+  S.players = [{name:'You',emoji:EMOJI[0],bot:false}];
+  if(S.mode==='local') S.players.push({name:'Player 2',emoji:EMOJI[1],bot:false});
+  S.screen='lobby'; render();
+  if(S.role==='host') openHost(); else dropPeer();
+  if(S.mode==='online' && need>1){ later(()=>{ addBot(); },1200); }
+}
+function addBot(){
+  const max = GAMES[S.game].max;
+  if(S.screen!=='lobby' || S.players.length>=max) return;
+  const name = BOTS.filter(b=>!S.players.some(p=>p.name===b))[0] || 'Bot';
+  S.players.push({name,emoji:EMOJI[S.players.length%8],bot:true}); render();
+}
+function lobby(){
+  const g = GAMES[S.game], n = S.players.length, ok = n>=g.min;
+  return `<div class="stage"><div class="panel">
+    <div class="mono">${g.name} · ${S.mode==='online'?'Online room':'One screen'}</div>
+    ${S.mode==='online'?`<div class="row" style="justify-content:space-between;margin-top:10px"><div><div class="mono">Room code</div><div class="code">${S.room}</div></div>
+      <button class="pill" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.origin+location.pathname+'#'+S.room);toast('Invite link copied')">Copy invite ⧉</button></div>
+      <p style="color:var(--mute);font-size:14px">Share the code or invite link. Anyone with it can join, or add bot friends.</p>`:`<h2 style="font-size:30px;margin-top:8px">Who's at the couch?</h2>`}
+    <div class="plist">${S.players.map((p,i)=>`
+      <div class="pl"><span class="av">${p.emoji}</span>
+      ${p.bot||S.mode==='online'?`<span style="flex:1;font-size:17px">${esc(p.name)} ${p.host?'<span class="mono">host</span>':p.bot?'<span class="mono">bot</span>':p.remote?`<span class="mono">${p.remote===ME?'you':'friend'}</span>`:`<span class="mono">${S.role==='guest'?'host':'host'}</span>`}</span>`:`<input value="${esc(p.name)}" maxlength="14" oninput="S.players[${i}].name=this.value||'Player'">`}
+      ${S.role!=='guest'&&i>0&&(p.bot||p.remote||S.mode==='local')?`<button class="x" onclick="S.players.splice(${i},1);render()">✕</button>`:''}</div>`).join('')}</div>
+    <div class="row" style="flex-wrap:wrap">
+      ${n<g.max?`<button class="btn ghost" onclick="${S.mode==='online'?'addBot()':`S.players.push({name:'Player '+(S.players.length+1),emoji:EMOJI[S.players.length%8],bot:false});render()`}">+ ${S.mode==='online'?'Add bot friend':'Add player'}</button>`:''}
+      <button class="btn" ${ok?'':'disabled'} onclick="startGame()">Start game →</button>
+      <button class="btn ghost" onclick="go('home')">Back</button>
+    </div>
+    ${ok?'':`<p class="mono" style="margin-top:12px">Need at least ${g.min} players</p>`}
+  </div></div>`;
+}
+
+/* ---------- game dispatcher ---------- */
+function startGame(){
+  clearAll();
+  S.players.forEach(p=>p.score=0);
+  if(S.game==='trivia') S.g = {qs:S.players.map(()=>shuffle(QUIZ).slice(0,5)), i:0, turn:0, last:null, phase:'pass'};
+  if(S.game==='rps') S.g = {wins:[0,0], round:1, picks:[null,null], turn:0, phase:'pass', last:null};
+  if(S.game==='word') S.g = {words:shuffle(WORDS).slice(0,3), i:0, guessed:[], wrong:0, turn:0, msg:''};
+  if(S.game==='react') S.g = {round:1, turn:0, phase:'pass', ms:0, early:false, pts:0};
+  if(S.game==='memory'){ const e = shuffle(['🍕','🚀','🐙','🎸','🌵','🦄','🍩','👻']); S.g = {cards:shuffle([...e,...e]).map(x=>({e:x,up:false,done:false})), first:null, lock:false, turn:0, seen:[], msg:''}; }
+  S.screen='game'; render(); afterRender();
+}
+function scoreBar(turn){
+  return `<div class="score">${S.players.map((p,i)=>`<div class="${i===turn?'turn':''}">${p.emoji} ${esc(p.name)} <b>${p.score}</b></div>`).join('')}</div>`;
+}
+function game(){ return {trivia,rps,word,react,memory}[S.game](); }
+function afterRender(){ if(S.screen!=='game') return; ({trivia:triviaNext,rps:rpsNext,word:wordNext,react:reactNext,memory:memoryNext})[S.game](); }
+
+/* ---------- trivia ---------- */
+const TIME = 20;
+function trivia(){
+  const g = S.g, p = S.players[g.turn], [q,opts,right] = g.qs[g.turn][g.i];
+  const hdr = `<div class="mono">Question ${g.i+1} / 5 · ${p.emoji} ${esc(p.name)}</div>`;
+  if(g.phase==='pass') return `<div class="stage"><div class="panel center">${scoreBar(g.turn)}<div class="mono">Question ${g.i+1} / 5</div>
+    <div class="big pop">${p.emoji}</div><h2>${esc(p.name)}, you're up</h2><p style="color:var(--mute);margin:8px 0 20px">Pass the screen, then tap ready.</p>
+    <button class="btn" onclick="S.g.phase='ask';S.g.t0=Date.now();render();afterRender()">I'm ready →</button></div></div>`;
+  if(g.phase==='ask') return `<div class="stage"><div class="panel">${scoreBar(g.turn)}<div class="bar"><i style="animation-duration:${TIME}s"></i></div>
+    ${hdr}<div class="q">${esc(q)}</div>
+    <div class="opts">${opts.map((o,k)=>`<button class="opt" ${p.bot?'disabled':''} onclick="answer(${k})">${esc(o)}</button>`).join('')}</div>
+    ${p.bot?'<p class="mono" style="margin-top:14px">thinking…</p>':''}</div></div>`;
+  const L = g.last, lastOne = g.i===4 && g.turn===S.players.length-1;
+  return `<div class="stage"><div class="panel">${scoreBar(g.turn)}${hdr}<div class="q">${esc(q)}</div>
+    <div class="opts">${opts.map((o,k)=>`<button class="opt ${k===right?'ok':(k===L.k?'bad':'')}" disabled>${esc(o)}</button>`).join('')}</div>
+    <p style="margin:18px 0;font-size:20px">${L.k<0?'⏱ Out of time!':L.ok?`✅ Correct! +${L.pts}`:'❌ Not quite.'}</p>
+    <button class="btn" onclick="triviaAdvance()">${lastOne?'See results →':'Continue →'}</button></div></div>`;
+}
+function triviaNext(){
+  const g = S.g, p = S.players[g.turn];
+  if(g.phase==='pass'){ if(p.bot || multi() || S.players.filter(x=>!x.bot).length===1){ g.phase='ask'; g.t0=Date.now(); render(); afterRender(); } return; }
+  if(g.phase==='reveal'){ if(p.bot) later(triviaAdvance,1500); return; }
+  if(p.bot) later(()=>answer(Math.random()<.65?g.qs[g.turn][g.i][2]:Math.floor(Math.random()*4)), 900+Math.random()*2200);
+  later(()=>{ if(S.g===g && g.phase==='ask') answer(-1); }, TIME*1000+50);
+}
+function answer(k){
+  const g = S.g; if(g.phase!=='ask') return;
+  const left = Math.max(0, TIME - (Date.now()-g.t0)/1000), ok = k===g.qs[g.turn][g.i][2], pts = ok ? 100+Math.round(left/TIME*100) : 0;
+  S.players[g.turn].score += pts; g.last = {k,ok,pts}; g.phase='reveal'; clearAll();
+  render(); afterRender();
+}
+function triviaAdvance(){
+  const g = S.g; if(g.phase!=='reveal') return; clearAll();
+  if(++g.turn>=S.players.length){ g.turn=0; g.i++; }
+  if(g.i>=5) return finish();
+  g.phase='pass'; render(); afterRender();
+}
+
+/* ---------- rock paper scissors ---------- */
+const HANDS = ['✊','✋','✌️'], HN = ['Rock','Paper','Scissors'];
+function rps(){
+  const g = S.g, [a,b] = S.players;
+  const head = `<div class="score">${S.players.map((p,i)=>`<div class="${i===g.turn&&g.phase!=='reveal'?'turn':''}">${p.emoji} ${esc(p.name)} <b>${g.wins[i]}</b></div>`).join('')}<div>Round <b>${g.round}</b> / 5</div></div>`;
+  if(g.phase==='pass') return `<div class="stage"><div class="panel center">${head}<div class="big pop">${S.players[g.turn].emoji}</div><h2>${esc(S.players[g.turn].name)}, make your move</h2><p style="color:var(--mute);margin:8px 0 20px">Don't let anyone peek.</p>
+    <button class="btn" onclick="S.g.phase='pick';render();afterRender()">Ready →</button></div></div>`;
+  if(g.phase==='pick') return `<div class="stage"><div class="panel center">${head}<h2>${esc(S.players[g.turn].name)}: pick one</h2>
+    <div class="rpsrow">${HANDS.map((h,i)=>`<button class="rpsbtn" onclick="rpsPick(${i})" title="${HN[i]}">${h}</button>`).join('')}</div></div></div>`;
+  const [x,y] = g.picks, res = g.last;
+  const msg = res===-1 ? 'Draw! Go again.' : `${esc(S.players[res].name)} takes the round!`;
+  const over = g.round>=5;
+  return `<div class="stage"><div class="panel center">${head}<div class="vs pop"><div>${HANDS[x]}<small>${esc(a.name)}</small></div><span style="font-size:28px;color:var(--mute)">VS</span><div style="transform:scaleX(-1)">${HANDS[y]}</div></div>
+    <p style="font-size:22px;margin:-30px 0 20px"><small style="display:block;color:var(--mute);font-size:14px;margin-bottom:6px">${esc(b.name)} ↑</small>${msg}</p>
+    <button class="btn" onclick="rpsAdvance()">${over?'See results →':'Next round →'}</button></div></div>`;
+}
+function rpsNext(){
+  const g = S.g;
+  if(multi() && g.phase==='pass'){ g.phase='pick'; render(); }
+  if(S.players[g.turn].bot && (g.phase==='pass'||g.phase==='pick')) { g.phase='pick'; later(()=>rpsPick(Math.floor(Math.random()*3)),700); }
+}
+function rpsPick(i){
+  const g = S.g; g.picks[g.turn]=i;
+  if(g.turn===0){ g.turn=1; g.phase='pass'; }
+  else {
+    const [x,y]=g.picks; g.last = x===y ? -1 : ((x-y+3)%3===1 ? 0 : 1);
+    if(g.last>=0){ g.wins[g.last]++; S.players[g.last].score++; }
+    g.phase='reveal';
+  }
+  render(); afterRender();
+}
+function rpsAdvance(){
+  const g = S.g; if(g.phase!=='reveal') return; if(g.round>=5) return finish();
+  g.round++;
+  g.picks=[null,null]; g.turn=0; g.phase='pass'; render(); afterRender();
+}
+
+/* ---------- secret word ---------- */
+const MAXWRONG = 6, WTIME = 20;
+function word(){
+  const g = S.g, [w,hint] = g.words[g.i], p = S.players[g.turn], done = [...w].every(c=>g.guessed.includes(c)), dead = g.wrong>=MAXWRONG;
+  const shown = [...w].map(c=>`<span>${done||dead||g.guessed.includes(c)?c:''}</span>`).join('');
+  return `<div class="stage"><div class="panel center">${scoreBar(done||dead?-1:g.turn)}
+    ${done||dead?'':`<div class="bar"><i style="animation-duration:${WTIME}s"></i></div>`}<div class="mono">Word ${g.i+1} / ${g.words.length} · Clue</div><h2 style="font-size:26px;margin:6px 0">${esc(hint)}</h2>
+    <div class="word ${done?'pop':''}">${shown}</div>
+    <div class="hearts">${'❤️'.repeat(MAXWRONG-g.wrong)}${'🖤'.repeat(g.wrong)}</div>
+    <p class="mono" style="margin:12px 0">${esc(g.msg)}</p>
+    ${done||dead?`<button class="btn" onclick="wordAdvance()">${g.i+1<g.words.length?'Next word →':'See results →'}</button>`:
+    `<p style="margin-bottom:12px">${p.emoji} <b>${esc(p.name)}</b>'s turn${p.bot?' …':''}</p>
+    <div class="keys">${[...'abcdefghijklmnopqrstuvwxyz'].map(c=>`<button ${g.guessed.includes(c)||p.bot?'disabled':''} class="${g.guessed.includes(c)?(w.includes(c)?'hit':'miss'):''}" onclick="guess('${c}')">${c}</button>`).join('')}</div>`}
+  </div></div>`;
+}
+function wordNext(){
+  const g = S.g, w = g.words[g.i][0], i0 = g.i;
+  if([...w].every(c=>g.guessed.includes(c))||g.wrong>=MAXWRONG) return;
+  later(()=>{ if(S.g!==g||g.i!==i0) return; g.msg = `${S.players[g.turn].name} ran out of time`; g.turn=(g.turn+1)%S.players.length; render(); afterRender(); }, WTIME*1000);
+  if(!S.players[g.turn].bot) return;
+  later(()=>{
+    const left = [...'etaoinsrhldcumfpgwybvkxjqz'].filter(c=>!g.guessed.includes(c));
+    const pick = Math.random()<.55 ? [...new Set(w)].filter(c=>!g.guessed.includes(c))[0] || left[0] : left[Math.floor(Math.random()*Math.min(6,left.length))];
+    guess(pick);
+  }, 1000);
+}
+function guess(c){
+  const g = S.g, w = g.words[g.i][0], p = S.players[g.turn]; if(g.guessed.includes(c)) return;
+  clearAll(); g.guessed.push(c);
+  const n = [...w].filter(x=>x===c).length;
+  if(n){
+    p.score += 10*n; g.msg = `${p.name} found ${n}× “${c.toUpperCase()}” +${10*n}`;
+    if([...w].every(x=>g.guessed.includes(x))){ p.score += 30; g.msg = `${p.name} finished the word! +30 bonus`; }
+  } else { g.wrong++; g.msg = `No “${c.toUpperCase()}” — turn passes`; g.turn = (g.turn+1)%S.players.length; }
+  if(g.wrong>=MAXWRONG) g.msg = `Out of lives! It was “${w.toUpperCase()}”`;
+  render(); afterRender();
+}
+function wordAdvance(){
+  const g = S.g; if(![...g.words[g.i][0]].every(c=>g.guessed.includes(c)) && g.wrong<MAXWRONG) return; clearAll(); if(++g.i>=g.words.length) return finish();
+  g.guessed=[]; g.wrong=0; g.msg=''; g.turn = g.i % S.players.length; render(); afterRender();
+}
+
+/* ---------- reaction rush ---------- */
+function react(){
+  const g = S.g, p = S.players[g.turn];
+  const head = scoreBar(g.turn);
+  if(g.phase==='pass') return `<div class="stage"><div class="panel center">${head}<div class="mono">Round ${g.round} / 5</div><div class="big pop">${p.emoji}</div><h2>${esc(p.name)}, get ready</h2>
+    <p style="color:var(--mute);margin:8px 0 20px">Tap the pad the moment it turns green.</p><button class="btn" onclick="reactStart()">Start →</button></div></div>`;
+  if(g.phase==='wait') return `<div class="stage"><div class="panel">${head}<div class="mono">Round ${g.round} / 5 · ${p.emoji} ${esc(p.name)}</div><div class="reactpad wait" onpointerdown="reactTap()">Wait for it…</div></div></div>`;
+  if(g.phase==='go') return `<div class="stage"><div class="panel">${head}<div class="mono">Round ${g.round} / 5 · ${p.emoji} ${esc(p.name)}</div><div class="reactpad go" onpointerdown="reactTap()">TAP!</div></div></div>`;
+  const last = g.round===5 && g.turn===S.players.length-1;
+  return `<div class="stage"><div class="panel center">${head}<div class="mono">Round ${g.round} / 5 · ${p.emoji} ${esc(p.name)}</div>
+    <div class="big pop">${g.early?'🙈':'⚡'}</div><h2>${g.early?'Too early! 0 points':`${g.ms} ms · +${g.pts}`}</h2>
+    <p style="margin:20px 0"><button class="btn" onclick="reactAdvance()">${last?'See results →':'Continue →'}</button></p></div></div>`;
+}
+function reactStart(){
+  const g = S.g; g.phase='wait'; g.early=false; render();
+  later(()=>{ g.phase='go'; g.t0=performance.now(); render(); if(S.players[g.turn].bot) later(reactTap, 250+Math.random()*350); }, 1500+Math.random()*2800);
+}
+function reactTap(){
+  const g = S.g; if(g.phase==='wait'){ clearAll(); g.early=true; g.pts=0; }
+  else if(g.phase==='go'){ g.ms = Math.round(performance.now()-g.t0); g.pts = Math.max(0,1000-g.ms); g.early=false; }
+  else return;
+  S.players[g.turn].score += g.pts; g.phase='result'; render(); afterRender();
+}
+function reactNext(){
+  const g = S.g, p = S.players[g.turn];
+  if(p.bot && g.phase==='pass') later(reactStart,600);
+  if(p.bot && g.phase==='result') later(reactAdvance,1400);
+}
+function reactAdvance(){
+  const g = S.g; if(g.phase!=='result') return; clearAll();
+  if(++g.turn>=S.players.length){ g.turn=0; g.round++; }
+  if(g.round>5) return finish();
+  g.phase='pass'; render(); afterRender();
+}
+
+/* ---------- memory match ---------- */
+function memory(){
+  const g = S.g, p = S.players[g.turn];
+  return `<div class="stage"><div class="panel center">${scoreBar(g.turn)}<p style="margin-bottom:14px">${p.emoji} <b>${esc(p.name)}</b>'s turn${p.bot?' …':''}</p>
+    <div class="mem">${g.cards.map((c,i)=>`<button class="${c.done?'done':c.up?'up':''}" ${p.bot||c.up||c.done?'disabled':''} onclick="flip(${i})">${c.up||c.done?c.e:'?'}</button>`).join('')}</div>
+    <p class="mono" style="margin-top:16px">${esc(g.msg)}</p></div></div>`;
+}
+function flip(i){
+  const g = S.g, c = g.cards[i]; if(g.lock||c.up||c.done) return;
+  c.up = true; if(!g.seen.includes(i)) g.seen.push(i);
+  const p = S.players[g.turn];
+  if(g.first===null){ g.first=i; g.msg=''; return render(), afterRender(); }
+  const f = g.cards[g.first];
+  if(f.e===c.e){
+    f.done=c.done=true; p.score+=10; g.first=null; g.msg=`${p.name} found a pair! +10`;
+    if(g.cards.every(x=>x.done)){ render(); return later(finish,900); }
+    return render(), afterRender();
+  }
+  g.lock=true; g.msg='No match…'; const a=g.first; render();
+  later(()=>{ g.cards[a].up=c.up=false; g.first=null; g.lock=false; g.turn=(g.turn+1)%S.players.length; g.msg=''; render(); afterRender(); },1000);
+}
+function memoryNext(){
+  const g = S.g; if(g.lock||!S.players[g.turn].bot) return;
+  later(()=>{
+    const open = g.cards.map((c,i)=>i).filter(i=>!g.cards[i].up&&!g.cards[i].done);
+    let pick = null;
+    if(Math.random()<.7){
+      if(g.first===null){ const k = g.seen.find(a=>!g.cards[a].done&&g.seen.some(b=>b!==a&&!g.cards[b].done&&g.cards[b].e===g.cards[a].e)); if(k!==undefined) pick=k; }
+      else pick = g.seen.find(b=>b!==g.first&&!g.cards[b].done&&!g.cards[b].up&&g.cards[b].e===g.cards[g.first].e);
+    }
+    if(pick===null||pick===undefined) pick = rnd(open);
+    flip(pick);
+  }, 800);
+}
+
+/* ---------- results ---------- */
+function finish(){ clearAll(); S.screen='results'; render(); confetti(); }
+function results(){
+  const r = [...S.players].sort((a,b)=>b.score-a.score), top = r[0].score, tie = r.filter(p=>p.score===top).length>1;
+  return `<div class="stage"><div class="panel center">
+    <div class="mono">${GAMES[S.game].name} · Final</div>
+    <div class="big pop">${tie?'🤝':'👑'}</div>
+    <h2 style="font-size:34px">${tie?"It's a tie. Rematch?":esc(r[0].name)+' wins!'}</h2>
+    <p style="color:var(--mute);margin-top:6px">${tie?'Friendships: still intact (barely).':'Bad losers, assemble.'}</p>
+    <div class="rank" style="text-align:left">${r.map((p,i)=>`<div class="pl"><span class="mono">${i+1}</span><span class="av">${p.emoji}</span><span style="flex:1">${esc(p.name)}</span><b style="color:var(--lime);font-family:'JetBrains Mono'">${p.score}</b></div>`).join('')}</div>
+    <div class="row" style="justify-content:center;flex-wrap:wrap"><button class="btn" onclick="startGame()">One more round ↻</button><button class="btn ghost" onclick="go('lobby')">Change players</button><button class="btn ghost" onclick="go('home')">Leave room</button></div>
+  </div>
+  <div class="sec" style="margin-top:36px"><div><div class="mono">${S.mode==='online'?'Room '+S.room:'Same crew'} · Keep it going</div><h2 style="font-size:28px">Play something else.</h2></div></div>
+  <div class="cards">${Object.entries(GAMES).filter(([k])=>k!==S.game).map(([k,g])=>{
+    const tooMany = S.players.length>g.max;
+    return `<button class="card g-${k}" ${tooMany?'disabled style="opacity:.4;cursor:not-allowed"':''} onclick="nextGame('${k}')">
+      <div class="art" style="height:90px;font-size:48px"><span>${g.art}</span></div>
+      <div class="body" style="padding:14px"><h3 style="font-size:18px;margin:0 0 4px">${g.name}</h3><div class="mono">${tooMany?'Max '+g.max+' players':g.players+' · '+g.time}</div></div></button>`;}).join('')}</div></div>`;
+}
+function nextGame(k){
+  clearAll(); S.game = k;
+  while(S.players.length<GAMES[k].min) S.players.push({name:BOTS.find(b=>!S.players.some(p=>p.name===b))||'Bot',emoji:EMOJI[S.players.length%8],bot:true});
+  startGame();
+}
+function confetti(){
+  for(let i=0;i<40;i++){
+    const d = document.createElement('div');
+    d.style.cssText = `position:fixed;top:-10px;left:${Math.random()*100}vw;width:9px;height:14px;background:${rnd(['#b8f34a','#ffd84a','#ff7aa8','#7ad7ff'])};z-index:9;pointer-events:none;transition:transform ${1.6+Math.random()*1.4}s ease-in,opacity 2.8s;`;
+    document.body.append(d);
+    requestAnimationFrame(()=>{ d.style.transform = `translate(${(Math.random()-.5)*200}px,${innerHeight+40}px) rotate(${Math.random()*720}deg)`; d.style.opacity=0; });
+    setTimeout(()=>d.remove(),3200);
+  }
+}
+
+function render(){
+  $('#view').innerHTML = {home,how,join,lobby,game,results}[S.screen]();
+  broadcast();
+}
+/* ---------- online rooms (WebRTC via PeerJS) ---------- */
+const ACTS = {answer:1,rpsPick:1,guess:1,reactStart:1,reactTap:1,flip:1,triviaAdvance:0,rpsAdvance:0,wordAdvance:0,reactAdvance:0,startGame:0,nextGame:0,addBot:0};
+const ORIG = {};
+Object.keys(ACTS).concat('go').forEach(name=>{
+  ORIG[name] = window[name];
+  window[name] = function(...a){
+    if(S.role==='guest'){
+      if(name==='go' && a[0]==='home'){ send({t:'leave'}); dropPeer(); S.role=null; S.room=''; return ORIG.go('home'); }
+      if(name==='go' && a[0]!=='lobby') return ORIG.go(...a);
+      return send({t:'act',fn:name,args:a});
+    }
+    if(S.role==='host'){
+      if(name==='go' && a[0]==='home'){ send({t:'closed'}); dropPeer(); S.role=null; }
+      else if(ACTS[name] && S.screen==='game' && S.g){ const p=S.players[S.g.turn]; if(p && p.remote) return; }
+    }
+    return ORIG[name].apply(this,a);
+  };
+});
+function broadcast(){ if(S.role==='host') send({t:'state',st:{screen:S.screen,game:S.game,players:S.players,g:S.g,mode:S.mode}}); }
+function openHost(){
+  dropPeer();
+  if(typeof Peer==='undefined'){ toast('Online rooms need a network connection'); return; }
+  const p = new Peer('rivalry-'+S.room); PEER = p;
+  p.on('error', e=>{
+    if(PEER!==p) return;
+    if(e.type==='unavailable-id'){ S.room = newCode(); render(); openHost(); }
+    else toast('Room is offline. Check your connection.');
+  });
+  p.on('connection', conn=>{
+    conn.on('open', ()=>{ CONNS[conn.peer] = conn; });
+    conn.on('data', m=>{ if(m && typeof m==='object'){ m.from = conn.peer; hostMsg(m); } });
+    conn.on('close', ()=>{ delete CONNS[conn.peer]; dropRemote(conn.peer); });
+  });
+}
+function dropRemote(id){
+  const i = S.players.findIndex(p=>p.remote===id); if(i<0) return;
+  if(S.screen==='game'){ const p=S.players[i]; p.remote=undefined; p.bot=true; p.name+=' (bot)'; render(); afterRender(); }
+  else { S.players.splice(i,1); render(); }
+}
+function hostMsg(m){
+  if(S.role!=='host') return;
+  if(m.t==='join'){
+    const busy = S.screen!=='lobby' && S.screen!=='results';
+    if(busy||S.players.length>=GAMES[S.game].max) return send({t:'denied',to:m.from,why:busy?'That game is already running.':'That room is full.'});
+    if(S.players.some(p=>p.remote===m.from)) return;
+    const bi = S.players.findIndex(p=>p.bot); if(bi>-1) S.players.splice(bi,1);
+    const n = S.players.filter(p=>p.remote).length+1;
+    S.players.push({name:'Guest '+n,emoji:EMOJI[S.players.length%8],bot:false,remote:m.from});
+    if(S.players[0].name==='You') S.players[0].name='Host';
+    send({t:'welcome',to:m.from}); render(); toast('A friend joined');
+  } else if(m.t==='leave'){ dropRemote(m.from); }
+  else if(m.t==='act' && Array.isArray(m.args) && m.args.length<=2 && m.args.every(x=>['string','number'].includes(typeof x)) && (m.fn in ACTS || (m.fn==='go' && m.args[0]==='lobby'))){
+    if(ACTS[m.fn] && S.screen==='game' && S.g){ const p=S.players[S.g.turn]; if(!p||p.remote!==m.from) return; }
+    if(m.fn==='guess' && !/^[a-z]$/.test(m.args[0])) return;
+    ORIG[m.fn](...m.args);
+  }
+}
+addEventListener('pagehide',()=>{ if(S.role==='guest') send({t:'leave'}); if(S.role==='host') send({t:'closed'}); dropPeer(); });
+
+render();
+{ const h=location.hash.slice(1); if(/^[A-Za-z]{4}$/.test(h)){ go('join'); $('#joincode').value=h.toUpperCase(); doJoin(); } }
+</script>
+</body>
+</html>
